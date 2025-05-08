@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>لعبة التخمين</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            font-family: 'Cairo', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .guess-container {
+            background: #fff;
+            padding: 2rem 2.5rem;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.15);
+            text-align: center;
+            width: 340px;
+        }
+        .guess-title {
+            color: #2575fc;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+        .guess-input {
+            width: 60%;
+            padding: 0.7rem;
+            margin-bottom: 1rem;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: center;
+        }
+        .guess-btn, .reset-btn {
+            width: 100%;
+            padding: 0.7rem;
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: background 0.2s;
+        }
+        .guess-btn:hover, .reset-btn:hover {
+            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+        }
+        .message {
+            font-size: 1.1rem;
+            color: #444;
+            margin-bottom: 1rem;
+            min-height: 28px;
+        }
+        .score {
+            font-size: 1rem;
+            color: #888;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="guess-container">
+        <div class="guess-title">لعبة التخمين</div>
+        <div class="score" id="score">المحاولات: 0</div>
+        <input type="number" id="guessInput" class="guess-input" placeholder="أدخل رقم بين 1 و 100" min="1" max="100">
+        <button class="guess-btn" onclick="makeGuess()">تخمين</button>
+        <div class="message" id="message"></div>
+        <button class="reset-btn" onclick="resetGame()">إعادة اللعب</button>
+    </div>
+    <script>
+        let target, tries;
+
+        function resetGame() {
+            target = Math.floor(Math.random() * 100) + 1;
+            tries = 0;
+            document.getElementById('score').textContent = "المحاولات: 0";
+            document.getElementById('message').textContent = "";
+            document.getElementById('guessInput').value = "";
+            document.getElementById('guessInput').disabled = false;
+        }
+
+        function makeGuess() {
+            const input = document.getElementById('guessInput');
+            const message = document.getElementById('message');
+            let guess = parseInt(input.value);
+            if (isNaN(guess) || guess < 1 || guess > 100) {
+                message.textContent = "يرجى إدخال رقم صحيح بين 1 و 100";
+                return;
+            }
+            tries++;
+            document.getElementById('score').textContent = "المحاولات: " + tries;
+            if (guess === target) {
+                message.textContent = "مبروك! الرقم الصحيح هو " + target + " 🎉";
+                input.disabled = true;
+            } else if (guess < target) {
+                message.textContent = "الرقم أكبر!";
+            } else {
+                message.textContent = "الرقم أصغر!";
+            }
+        }
+
+        // بدء اللعبة
+        resetGame();
+    </script>
+</body>
+</html>

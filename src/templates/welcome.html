@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>مرحباً بك</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cairo', sans-serif;
+        }
+        .welcome-container {
+            background: #fff;
+            padding: 2.5rem 2rem;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.2);
+            width: 350px;
+            text-align: center;
+        }
+        .welcome-container h1 {
+            color: #2575fc;
+            margin-bottom: 1.2rem;
+        }
+        .welcome-container p {
+            color: #444;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        .welcome-container button {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .welcome-container button:hover {
+            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-container">
+        <h1>مرحباً بك في منصتنا!</h1>
+        <p>
+            يسعدنا انضمامك إلينا.<br>
+            يمكنك إنشاء حساب جديد او تسجيل الدخول والبدء فوراً
+        </p>
+        <button onclick="window.location.href='/register-page'">إنشاء حساب جديد</button>
+        <br><br>
+        <button onclick="window.location.href='/login-page'">تسجيل الدخول</button>
+    </div>
+</body>
+</html>

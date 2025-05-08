@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>المقالات البرمجية</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+            min-height: 100vh;
+            font-family: 'Cairo', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .articles-container {
+            background: #fff;
+            padding: 2.5rem 2rem;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18);
+            width: 600px;
+            max-width: 95vw;
+            text-align: center;
+        }
+        .articles-title {
+            color: #185a9d;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .articles-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        .article-card {
+            background: #f7fafc;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(44, 62, 80, 0.10);
+            padding: 1.2rem 1rem 1.5rem 1rem;
+            width: 100%;
+            max-width: 500px;
+            text-align: right;
+            direction: rtl;
+        }
+        .article-title {
+            color: #2575fc;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        .article-content {
+            color: #444;
+            font-size: 1rem;
+            margin-bottom: 0.7rem;
+        }
+        .article-link {
+            color: #185a9d;
+            text-decoration: underline;
+            font-size: 1rem;
+        }
+        .back-btn {
+            margin-top: 2rem;
+            background: #eee;
+            color: #185a9d;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1.2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .back-btn:hover {
+            background: #d6f5ef;
+        }
+    </style>
+</head>
+<body>
+    <div class="articles-container">
+        <div class="articles-title">مقالات برمجية مختارة</div>
+        <div class="articles-list">
+            <div class="article-card">
+                <div class="article-title">ما هي البرمجة؟</div>
+                <div class="article-content">
+                    البرمجة هي عملية كتابة تعليمات وأوامر لجهاز الحاسوب ليقوم بتنفيذ مهام معينة. تعرّف على أساسيات البرمجة ولماذا هي مهمة في عالم اليوم.
+                </div>
+                <a class="article-link" href="https://ar.wikipedia.org/wiki/%D8%A8%D8%B1%D9%85%D8%AC%D8%A9" target="_blank">اقرأ المزيد</a>
+            </div>
+            <div class="article-card">
+                <div class="article-title">كيف تبدأ في تعلم البرمجة؟</div>
+                <div class="article-content">
+                    خطوات عملية للمبتدئين: اختيار لغة البرمجة، مصادر التعلم، وأفضل النصائح للانطلاق في هذا المجال.
+                </div>
+                <a class="article-link" href="https://academy.hsoub.com/programming/basics/%D9%83%D9%8A%D9%81-%D8%AA%D8%A8%D8%AF%D8%A3-%D8%AA%D8%B9%D9%84%D9%85-%D8%A7%D9%84%D8%A8%D8%B1%D9%85%D8%AC%D8%A9-%D9%85%D9%86-%D8%A7%D9%84%D8%B5%D9%81%D8%B1-r15/" target="_blank">اقرأ المزيد</a>
+            </div>
+            <div class="article-card">
+                <div class="article-title">أشهر لغات البرمجة واستخداماتها</div>
+                <div class="article-content">
+                    تعرف على أشهر لغات البرمجة مثل Python وJavaScript وC++، ومجالات استخدامها في السوق.
+                </div>
+                <a class="article-link" href="https://www.arabicprogrammer.com/article/8390138587/" target="_blank">اقرأ المزيد</a>
+            </div>
+            <div class="article-card">
+                <div class="article-title">نصائح لإتقان البرمجة بسرعة</div>
+                <div class="article-content">
+                    نصائح ذهبية لتسريع تعلمك للبرمجة، وتجنب الأخطاء الشائعة لدى المبتدئين.
+                </div>
+                <a class="article-link" href="https://www.geeksforgeeks.org/tips-and-tricks-to-learn-programming-faster/" target="_blank">اقرأ المزيد</a>
+            </div>
+        </div>
+        <button class="back-btn" onclick="window.location.href='/home'">رجوع للرئيسية</button>
+    </div>
+</body>
+</html>

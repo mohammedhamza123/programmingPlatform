@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>فئة الترفيه</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .games-container {
+            background: #fff;
+            padding: 2.5rem 2rem 2rem 2rem;
+            border-radius: 22px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18);
+            width: 440px;
+            max-width: 98vw;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .games-container::before {
+            content: "";
+            position: absolute;
+            left: -60px;
+            top: -60px;
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle, #6a11cb55 60%, transparent 100%);
+            z-index: 0;
+        }
+        .games-container::after {
+            content: "";
+            position: absolute;
+            right: -60px;
+            bottom: -60px;
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle, #2575fc44 60%, transparent 100%);
+            z-index: 0;
+        }
+        .games-container h2 {
+            color: #2575fc;
+            margin-bottom: 1.2rem;
+            font-size: 2rem;
+            font-weight: bold;
+            z-index: 1;
+            position: relative;
+        }
+        .games-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            z-index: 1;
+            position: relative;
+        }
+        .game-card {
+            background: #f7fafc;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px rgba(44, 62, 80, 0.10);
+            padding: 1.2rem 1rem 1.5rem 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            transition: box-shadow 0.2s, transform 0.2s;
+            cursor: pointer;
+            border: none;
+            text-align: right;
+            position: relative;
+        }
+        .game-card:hover {
+            box-shadow: 0 6px 24px rgba(44, 62, 80, 0.18);
+            transform: scale(1.025);
+            background: #e3eaff;
+        }
+        .game-icon {
+            font-size: 2.3rem;
+            margin-left: 0.7rem;
+            flex-shrink: 0;
+            color: #6a11cb;
+            filter: drop-shadow(0 2px 8px #6a11cb22);
+        }
+        .game-info {
+            flex: 1;
+        }
+        .game-title {
+            color: #2575fc;
+            font-size: 1.15rem;
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+        .game-desc {
+            color: #444;
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+        .game-link-arrow {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: #2575fc;
+            opacity: 0.7;
+            transition: left 0.2s, opacity 0.2s;
+        }
+        .game-card:hover .game-link-arrow {
+            left: 8px;
+            opacity: 1;
+        }
+        .entertainment-footer {
+            margin-top: 2.2rem;
+            color: #888;
+            font-size: 1rem;
+            z-index: 1;
+            position: relative;
+        }
+        @media (max-width: 600px) {
+            .games-container {
+                padding: 1.2rem 0.2rem 1.2rem 0.2rem;
+                width: 99vw;
+            }
+            .game-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            .game-icon {
+                margin-left: 0;
+            }
+            .game-link-arrow {
+                left: 10px;
+            }
+        }
+    </style>
+    <!-- أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+</head>
+<body>
+    <div class="games-container">
+        <h2>اختر لعبة للترفيه</h2>
+        <div class="games-list">
+            <a class="game-card" href="/game-xo">
+                <span class="game-icon"><i class="fa-solid fa-xmark"></i><i class="fa-solid fa-o" style="margin-right:-0.5rem;"></i></span>
+                <div class="game-info">
+                    <div class="game-title">لعبة XO (إكس أو)</div>
+                    <div class="game-desc">تنافس مع صديقك أو الذكاء الاصطناعي في لعبة الاستراتيجية الكلاسيكية.</div>
+                </div>
+                <span class="game-link-arrow"><i class="fa-solid fa-arrow-left"></i></span>
+            </a>
+            <a class="game-card" href="/game-snake">
+                <span class="game-icon"><i class="fa-solid fa-dragon"></i></span>
+                <div class="game-info">
+                    <div class="game-title">لعبة الدودة (Snake)</div>
+                    <div class="game-desc">اختبر سرعة رد فعلك وحاول تحقيق أعلى نتيجة دون الاصطدام!</div>
+                </div>
+                <span class="game-link-arrow"><i class="fa-solid fa-arrow-left"></i></span>
+            </a>
+            <a class="game-card" href="/game-memory">
+                <span class="game-icon"><i class="fa-solid fa-brain"></i></span>
+                <div class="game-info">
+                    <div class="game-title">لعبة الذاكرة</div>
+                    <div class="game-desc">اختبر قوة ذاكرتك وحاول إيجاد كل الأزواج المتشابهة بأقل عدد من المحاولات.</div>
+                </div>
+                <span class="game-link-arrow"><i class="fa-solid fa-arrow-left"></i></span>
+            </a>
+            <a class="game-card" href="/game-guess">
+                <span class="game-icon"><i class="fa-solid fa-question"></i></span>
+                <div class="game-info">
+                    <div class="game-title">لعبة التخمين</div>
+                    <div class="game-desc">هل تستطيع تخمين الرقم الصحيح؟ تحدى نفسك في لعبة الأرقام!</div>
+                </div>
+                <span class="game-link-arrow"><i class="fa-solid fa-arrow-left"></i></span>
+            </a>
+        </div>
+        <div class="entertainment-footer">
+            <i class="fa-solid fa-star"></i>
+            استمتع وشارك أصدقاءك التحدي!
+        </div>
+    </div>
+</body>
+</html>

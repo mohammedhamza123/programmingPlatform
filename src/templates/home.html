@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>منصتك البرمجية</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <style>
+        :root {
+            --main-bg: linear-gradient(135deg, #e3f6fc 0%, #185a9d 100%);
+            --main-color: #14305c;
+            --accent: #1abc9c;
+            --card-bg: #fff;
+            --card-radius: 22px;
+            --shadow: 0 4px 32px rgba(44, 62, 80, 0.10);
+            --text-dark: #17202a;
+            --text-light: #fff;
+            --muted: #5a5a5a;
+            --side-bar-bg: #f8fafc;
+            --side-bar-link: #185a9d;
+            --side-bar-link-hover: #fff;
+            --side-bar-link-bg-hover: #1abc9c;
+            --category-bg: linear-gradient(90deg, #1abc9c 0%, #185a9d 100%);
+            --category-bg-hover: linear-gradient(90deg, #185a9d 0%, #1abc9c 100%);
+            --feature-title: #0d47a1;
+            --feature-list: #222;
+        }
+        body.night {
+            --main-bg: linear-gradient(135deg, #232946 0%, #16161a 100%);
+            --main-color: #f7f7f7;
+            --accent: #1abc9c;
+            --card-bg: #232946;
+            --shadow: 0 4px 32px rgba(44, 62, 80, 0.30);
+            --text-dark: #f7f7f7;
+            --text-light: #232946;
+            --muted: #bcbcbc;
+            --side-bar-bg: #16161a;
+            --side-bar-link: #fff;
+            --side-bar-link-hover: #232946;
+            --side-bar-link-bg-hover: #1abc9c;
+            --category-bg: linear-gradient(90deg, #1abc9c 0%, #232946 100%);
+            --category-bg-hover: linear-gradient(90deg, #232946 0%, #1abc9c 100%);
+            --feature-title: #1abc9c;
+            --feature-list: #f7f7f7;
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background: var(--main-bg);
+            direction: rtl;
+            box-sizing: border-box;
+            transition: background 0.3s;
+        }
+        body {
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+        }
+        .header-bar {
+            width: 100%;
+            background: transparent;
+            padding: 2rem 2rem 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .header-bar h1 {
+            color: var(--main-color);
+            font-size: 2.2rem;
+            margin: 0;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 2px #fff8;
+            text-align: center;
+            flex: 1;
+        }
+        .sidebar-toggle {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            font-size: 1.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #185a9d22;
+            transition: background 0.2s;
+            position: absolute;
+            right: 2rem;
+            top: 2rem;
+        }
+        .sidebar-toggle:hover {
+            background: #185a9d;
+        }
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(30,40,60,0.25);
+            z-index: 998;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .side-bar {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 300px;
+            height: 100vh;
+            background: var(--side-bar-bg);
+            box-shadow: var(--shadow);
+            border-radius: 0 var(--card-radius) var(--card-radius) 0;
+            padding: 2.5rem 1.5rem 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.7rem;
+            z-index: 999;
+            transition: right 0.35s cubic-bezier(.77,0,.18,1), background 0.3s, visibility 0s 0.35s;
+            visibility: hidden;
+        }
+        .side-bar.active {
+            right: 0;
+            visibility: visible;
+            transition: right 0.35s cubic-bezier(.77,0,.18,1), background 0.3s, visibility 0s;
+        }
+        body.sidebar-open {
+            overflow: hidden;
+        }
+        .side-bar .close-btn {
+            position: absolute;
+            left: 18px;
+            top: 18px;
+            background: none;
+            border: none;
+            color: var(--main-color);
+            font-size: 1.7rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .side-bar .close-btn:hover {
+            color: var(--accent);
+        }
+        .side-bar .avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1abc9c 0%, #185a9d 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.7rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            border: 4px solid #fff;
+            box-shadow: 0 2px 14px #185a9d22;
+        }
+        .side-bar .username {
+            font-size: 1.3rem;
+            color: var(--main-color);
+            font-weight: bold;
+            margin-bottom: 0.7rem;
+            text-shadow: 0 1px 2px #fff8;
+        }
+        .side-bar .quick-links {
+            width: 100%;
+            margin: 1.5rem 0 1rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .side-bar .quick-link {
+            background: #e3eaff;
+            color: var(--side-bar-link);
+            border-radius: 10px;
+            padding: 0.9rem 1.3rem;
+            font-size: 1.18rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: background 0.18s, color 0.18s;
+            box-shadow: 0 1px 4px #185a9d11;
+        }
+        .side-bar .quick-link:hover {
+            background: var(--side-bar-link-bg-hover);
+            color: var(--side-bar-link-hover);
+        }
+        .side-bar .logout-btn {
+            margin-top: 1.5rem;
+            background: linear-gradient(90deg, #ff5858 0%, #f09819 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            font-size: 1.18rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            transition: background 0.18s;
+        }
+        .side-bar .logout-btn:hover {
+            background: linear-gradient(90deg, #f09819 0%, #ff5858 100%);
+        }
+        .side-bar .night-btn {
+            margin-top: 1.2rem;
+            background: linear-gradient(90deg, #232946 0%, #1abc9c 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 0.8rem 1.2rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.7rem;
+            transition: background 0.18s;
+        }
+        .side-bar .night-btn:hover {
+            background: linear-gradient(90deg, #1abc9c 0%, #232946 100%);
+        }
+        .main-content {
+            padding: 2.5rem 2.5rem 2.5rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2.2rem;
+            min-height: 100vh;
+            background: var(--main-bg);
+        }
+        .next-task-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 2px 12px #185a9d22;
+            padding: 1.5rem 1.7rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            min-height: 80px;
+            font-size: 1.18rem;
+            direction: rtl;
+            margin-bottom: 1.2rem;
+            color: var(--text-dark);
+            transition: background 0.3s, color 0.3s;
+        }
+        .next-task-card .icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-left: 1rem;
+        }
+        .next-task-card .task-info {
+            flex: 1;
+        }
+        .next-task-card .task-title {
+            font-weight: bold;
+            color: var(--main-color);
+            font-size: 1.25rem;
+            margin-bottom: 0.3em;
+            display: block;
+        }
+        .next-task-card .task-meta {
+            color: #0d47a1;
+            font-size: 1.08em;
+            display: flex;
+            gap: 1.7em;
+            align-items: center;
+            font-weight: 600;
+        }
+        body.night .next-task-card .task-meta {
+            color: #1abc9c;
+        }
+        .next-task-card .no-task {
+            color: var(--muted);
+            font-size: 1.15rem;
+            font-weight: 600;
+        }
+        .welcome-msg {
+            color: #0d47a1;
+            font-size: 1.35rem;
+            margin-bottom: 1.5rem;
+            text-align: right;
+            text-shadow: 0 1px 2px #fff8;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        body.night .welcome-msg {
+            color: #1abc9c;
+        }
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.2rem;
+        }
+        .category {
+            background: var(--category-bg);
+            color: #fff;
+            border-radius: 16px;
+            padding: 1.5rem 2.7rem;
+            font-size: 1.35rem;
+            cursor: pointer;
+            box-shadow: 0 2px 12px rgba(44, 62, 80, 0.10);
+            transition: background 0.2s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            justify-content: center;
+            font-weight: bold;
+            text-shadow: 0 1px 2px #185a9d55;
+        }
+        .category:hover {
+            background: var(--category-bg-hover);
+            transform: scale(1.05);
+        }
+        .progress-widget {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.3rem 1.5rem;
+            font-size: 1.18rem;
+            color: var(--main-color);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            justify-content: right;
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+            box-shadow: 0 2px 12px #185a9d11;
+            transition: background 0.3s, color 0.3s;
+        }
+        .progress-bar {
+            background: #e3eaff;
+            border-radius: 8px;
+            width: 130px;
+            height: 18px;
+            margin-left: 1rem;
+            overflow: hidden;
+            display: inline-block;
+        }
+        .progress-bar-inner {
+            background: linear-gradient(90deg, #1abc9c 0%, #185a9d 100%);
+            height: 100%;
+            width: 60%; /* عدل النسبة حسب تقدم المستخدم */
+        }
+        .daily-tip {
+            background: var(--card-bg);
+            color: #0d47a1;
+            border-radius: 12px;
+            padding: 1.3rem 1.5rem;
+            font-size: 1.18rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            justify-content: right;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 2px 12px #185a9d11;
+            transition: background 0.3s, color 0.3s;
+        }
+        body.night .daily-tip {
+            color: #1abc9c;
+        }
+        .features {
+            margin-top: 1.5rem;
+            text-align: right;
+        }
+        .feature-title {
+            color: var(--feature-title);
+            font-size: 1.35rem;
+            margin-bottom: 0.7rem;
+            font-weight: bold;
+        }
+        .feature-list {
+            color: var(--feature-list);
+            font-size: 1.15rem;
+            margin-bottom: 1rem;
+            padding-right: 1.5rem;
+            font-weight: 500;
+        }
+        /* مطورين الموقع */
+        .developers-section {
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .developer-card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            box-shadow: 0 2px 12px #185a9d22;
+            padding: 1.2rem 1.7rem 1.2rem 1.7rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 180px;
+            max-width: 220px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+        .developer-card:hover {
+            transform: translateY(-8px) scale(1.04);
+            box-shadow: 0 6px 24px #185a9d33;
+        }
+        .developer-avatar {
+            width: 74px;
+            height: 74px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1abc9c 0%, #185a9d 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.7rem;
+            color: #fff;
+            margin-bottom: 0.7rem;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 10px #185a9d22;
+            overflow: hidden;
+        }
+        .developer-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+        }
+        .developer-name {
+            font-size: 1.18rem;
+            font-weight: bold;
+            color: var(--main-color);
+            margin-bottom: 0.2rem;
+            text-align: center;
+        }
+        .developer-role {
+            font-size: 1rem;
+            color: var(--accent);
+            margin-bottom: 0.2rem;
+            text-align: center;
+        }
+        .developer-social {
+            margin-top: 0.5rem;
+            display: flex;
+            gap: 0.7rem;
+            justify-content: center;
+        }
+        .developer-social a {
+            color: var(--accent);
+            font-size: 1.25rem;
+            transition: color 0.18s;
+        }
+        .developer-social a:hover {
+            color: #185a9d;
+        }
+        @media (max-width: 700px) {
+            .header-bar h1 { font-size: 1.3rem; }
+            .main-content { padding: 1rem 0.2rem; }
+            .categories { grid-template-columns: 1fr; }
+            .category { font-size: 1.1rem; padding: 1rem 0.7rem; }
+            .progress-widget, .next-task-card, .daily-tip { font-size: 1rem; padding: 0.7rem 0.7rem; }
+            .side-bar { width: 90vw; min-width: 0; }
+            .developers-section { gap: 1.2rem; }
+            .developer-card { min-width: 140px; max-width: 100%; padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="القائمة">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <h1>منصتك البرمجية</h1>
+    </div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <nav class="side-bar" id="sideBar">
+        <button class="close-btn" id="sidebarClose" aria-label="إغلاق القائمة">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="avatar"><i class="fa-solid fa-user-astronaut"></i></div>
+        <div class="username" id="username">أهلاً بك 👋</div>
+        <div class="quick-links">
+            <div class="quick-link" onclick="window.location.href='/tasks'">
+                <i class="fa-solid fa-list-check"></i> مهامي
+            </div>
+            <div class="quick-link" onclick="window.location.href='/articles'">
+                <i class="fa-solid fa-newspaper"></i> مقالات مختارة
+            </div>
+            <div class="quick-link" onclick="window.location.href='/study'">
+                <i class="fa-solid fa-graduation-cap"></i> دروس وفيديوهات
+            </div>
+        </div>
+        <button class="logout-btn" onclick="logout()">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> تسجيل الخروج
+        </button>
+        <button class="night-btn" id="nightBtn">
+            <i class="fa-solid fa-moon"></i> <span id="nightText">تفعيل الوضع الليلي</span>
+        </button>
+    </nav>
+    <div class="main-content">
+        <div class="next-task-card" id="nextTaskWidget"></div>
+        <div class="welcome-msg" id="welcomeMsg">
+            مرحباً بك في منصتك، استكشف وطور مهاراتك!
+        </div>
+        <div class="categories">
+            <div class="category" onclick="window.location.href='/entertainment'">
+                <i class="fa-solid fa-gamepad"></i> ترفيه
+            </div>
+            <div class="category" onclick="window.location.href='/study'">
+                <i class="fa-solid fa-graduation-cap"></i> تعليم
+            </div>
+            <div class="category" onclick="window.location.href='/articles'">
+                <i class="fa-solid fa-newspaper"></i> مقالات
+            </div>
+            <div class="category" onclick="window.location.href='/tasks'">
+                <i class="fa-solid fa-list-check"></i> مهامي
+            </div>
+
+        </div>
+        <div class="progress-widget">
+            <span>تقدمك هذا الأسبوع</span>
+            <div class="progress-bar"><div class="progress-bar-inner" id="progressBar"></div></div>
+            <span id="progressPercent">60%</span>
+        </div>
+        <div class="daily-tip">
+            <i class="fa-solid fa-lightbulb"></i>
+            <span id="dailyTip">نصيحة اليوم: خصص 20 دقيقة يومياً لتعلم مهارة جديدة!</span>
+        </div>
+        <div class="features">
+            <div class="feature-title">مزايا الموقع:</div>
+            <ul class="feature-list">
+                <li>ألعاب ترفيهية وتحديات أسبوعية</li>
+                <li>مكتبة دروس وفيديوهات برمجية حديثة</li>
+                <li>مقالات برمجية مختارة بعناية</li>
+                <li>نظام مهام شخصي وتذكيرات ذكية</li>
+                <li>واجهة قابلة للتخصيص حسب اهتماماتك</li>
+                <li>إشعارات بالإنجازات والتقدم</li>
+            </ul>
+        </div>
+        <!-- قسم مطوري الموقع -->
+        <div class="developers-section">
+            <div class="developer-card">
+                <div class="developer-avatar">
+                    <img src="/static/aa.jpg" alt="مطور 1">
+                </div>
+                <div class="developer-name">محمد جمال حمزة</div>
+                <div class="developer-role">Full Stack Developer</div>
+                <div class="developer-social">
+                    <a href="https://github.com/mohammedhamza123" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="hmzh23102@gmail.com" title="البريد"><i class="fa-solid fa-envelope"></i></a>
+                </div>
+            </div>
+            <div class="developer-card">
+                <div class="developer-avatar">
+                    <img src="aq.jpg" alt="مطور 2">
+                </div>
+                <div class="developer-name">محمد سامي شوشان </div>
+                <div class="developer-role">Front-End Engineer</div>
+                <div class="developer-social">
+                    <a href="https://github.com/dev2" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="mailto:dev2@email.com" title="البريد"><i class="fa-solid fa-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+        <!-- نهاية قسم المطورين -->
+    </div>
+    <script>
+        // تخصيص الترحيب حسب نوع المستخدم
+        const userType = localStorage.getItem("user_type") || "مستخدم";
+        const username = localStorage.getItem("username") || "محمد حمزة";
+        document.getElementById("username").textContent = `مرحباً ${username} 👋`;
+        let welcomeMsg = "مرحباً بك في منصتك، استكشف وطور مهاراتك!";
+        if (userType === "طالب") welcomeMsg = "أهلاً طالبنا المميز! استكشف الدروس وحقق أهدافك.";
+        if (userType === "مطور") welcomeMsg = "مرحباً أيها المطور! جرب التحديات وشارك معرفتك.";
+        if (userType === "لاعب") welcomeMsg = "جاهز للتحدي؟ استمتع بألعابنا وحقق أعلى النقاط!";
+        document.getElementById("welcomeMsg").textContent = welcomeMsg;
+
+        // نصائح يومية عشوائية
+        const tips = [
+            "نصيحة اليوم: خصص 20 دقيقة يومياً لتعلم مهارة جديدة!",
+            "شارك إنجازاتك مع أصدقائك لتزيد من حماسك.",
+            "جرب لعبة جديدة اليوم وطور مهاراتك الذهنية.",
+            "اقرأ مقالاً قصيراً كل يوم لتبقى على اطلاع.",
+            "استخدم نظام المهام لتتبع تقدمك وتحقيق أهدافك."
+        ];
+        document.getElementById("dailyTip").textContent = tips[Math.floor(Math.random() * tips.length)];
+
+        // تحديث التقدم
+        let progress = parseInt(localStorage.getItem("progress") || "60");
+        document.getElementById("progressBar").style.width = progress + "%";
+        document.getElementById("progressPercent").textContent = progress + "%";
+
+        // زر تسجيل الخروج
+        function logout() {
+            localStorage.clear();
+            window.location.href = "/login-page";
+        }
+
+        // عرض المهمة القادمة بشكل احترافي
+        function showNextTask() {
+            let tasks = [];
+            try {
+                tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+            } catch { tasks = []; }
+            tasks = tasks.filter(t => !t.is_done && t.date && t.time);
+            const widget = document.getElementById("nextTaskWidget");
+            if (tasks.length > 0) {
+                tasks.sort((a, b) => {
+                    const adt = new Date(a.date + "T" + a.time);
+                    const bdt = new Date(b.date + "T" + b.time);
+                    return adt - bdt;
+                });
+                const next = tasks[0];
+                widget.innerHTML = `
+                    <span class="icon"><i class="fa-solid fa-bolt"></i></span>
+                    <span class="task-info">
+                        <span class="task-title">مهمتك القادمة: ${next.title}</span>
+                        <span class="task-meta">
+                            <span><i class="fa-regular fa-calendar"></i> ${next.date}</span>
+                            <span><i class="fa-regular fa-clock"></i> ${next.time}</span>
+                        </span>
+                    </span>
+                `;
+            } else {
+                widget.innerHTML = `<span class="icon"><i class="fa-solid fa-bolt"></i></span>
+                    <span class="no-task">لا توجد مهام قريبة.</span>`;
+            }
+        }
+
+        // جلب المهام من الـ API إذا لم تكن موجودة في localStorage
+        async function fetchTasksIfNeeded() {
+            let tasks = [];
+            try {
+                tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+            } catch { tasks = []; }
+            if (!tasks.length) {
+                try {
+                    const res = await fetch("/api/tasks", {
+                        headers: {
+                            "Authorization": "Bearer " + localStorage.getItem("access_token")
+                        }
+                    });
+                    if (res.ok) {
+                        tasks = await res.json();
+                        localStorage.setItem("tasks", JSON.stringify(tasks));
+                    }
+                } catch {}
+            }
+            showNextTask();
+        }
+
+        // استدعاء عند تحميل الصفحة وعند العودة للصفحة
+        fetchTasksIfNeeded();
+        window.addEventListener("focus", fetchTasksIfNeeded);
+
+        // الشريط الجانبي (فتح/إغلاق مع الأنميشن)
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sideBar = document.getElementById('sideBar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const sidebarClose = document.getElementById('sidebarClose');
+
+        function openSidebar() {
+            sideBar.classList.add('active');
+            sidebarOverlay.classList.add('active');
+            document.body.classList.add('sidebar-open');
+        }
+        function closeSidebar() {
+            sideBar.classList.remove('active');
+            sidebarOverlay.classList.remove('active');
+            document.body.classList.remove('sidebar-open');
+        }
+        sidebarToggle.addEventListener('click', openSidebar);
+        sidebarClose.addEventListener('click', closeSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+
+        // الوضع الليلي
+        const nightBtn = document.getElementById('nightBtn');
+        const nightText = document.getElementById('nightText');
+        function setNightMode(on) {
+            if (on) {
+                document.body.classList.add('night');
+                nightText.textContent = "إلغاء الوضع الليلي";
+            } else {
+                document.body.classList.remove('night');
+                nightText.textContent = "تفعيل الوضع الليلي";
+            }
+            localStorage.setItem('night_mode', on ? '1' : '0');
+        }
+        nightBtn.addEventListener('click', function() {
+            setNightMode(!document.body.classList.contains('night'));
+        });
+        // تفعيل الوضع الليلي تلقائياً إذا كان مفعل سابقاً
+        if (localStorage.getItem('night_mode') === '1') setNightMode(true);
+    </script>
+</body>
+</html>

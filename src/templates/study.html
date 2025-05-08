@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>مركز تعلم البرمجة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+            min-height: 100vh;
+            font-family: 'Cairo', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .study-container {
+            background: #fff;
+            padding: 2.5rem 2rem;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18);
+            width: 480px;
+            text-align: center;
+        }
+        .study-title {
+            color: #185a9d;
+            margin-bottom: 1.2rem;
+            font-size: 2.1rem;
+            font-weight: bold;
+        }
+        .study-desc {
+            color: #444;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        .study-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        .study-btn {
+            background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 1.1rem 1.2rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            min-width: 140px;
+            transition: background 0.2s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+        }
+        .study-btn:hover {
+            background: linear-gradient(90deg, #185a9d 0%, #43cea2 100%);
+            transform: scale(1.04);
+        }
+        .study-btn i {
+            font-size: 1.4rem;
+        }
+        .section-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+        .tab-btn {
+            background: #eee;
+            color: #185a9d;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1.2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .tab-btn.active, .tab-btn:hover {
+            background: #d6f5ef;
+            font-weight: bold;
+        }
+        .resources-list {
+            margin-top: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            align-items: center;
+        }
+        .resource-card {
+            background: #f7fafc;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(44, 62, 80, 0.10);
+            padding: 1.2rem 1rem 1.5rem 1rem;
+            margin-bottom: 1.5rem;
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .resource-title {
+            color: #185a9d;
+            font-size: 1.15rem;
+            margin-bottom: 0.7rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        .resource-link {
+            color: #2575fc;
+            text-decoration: underline;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .video-iframe {
+            border-radius: 8px;
+            border: none;
+            width: 100%;
+            max-width: 380px;
+            height: 220px;
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.09);
+        }
+        .back-btn {
+            margin-top: 1.5rem;
+            background: #eee;
+            color: #185a9d;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1.2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .back-btn:hover {
+            background: #d6f5ef;
+        }
+    </style>
+    <!-- أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+</head>
+<body>
+    <div class="study-container" id="studyContainer">
+        <div class="study-title">مركز تعلم البرمجة</div>
+        <div class="study-desc">اختر لغة أو مجال لتبدأ رحلتك، وستجد فيديوهات، كتب، مواقع تفاعلية، واختبارات!</div>
+        <div class="study-options" id="studyOptions">
+            <button class="study-btn" onclick="showSection('cpp')"><i class="fa-brands fa-cuttlefish"></i> لغة C++</button>
+            <button class="study-btn" onclick="showSection('python')"><i class="fa-brands fa-python"></i> بايثون</button>
+            <button class="study-btn" onclick="showSection('web')"><i class="fa-solid fa-globe"></i> برمجة الويب</button>
+            <button class="study-btn" onclick="showSection('java')"><i class="fa-brands fa-java"></i> جافا</button>
+            <button class="study-btn" onclick="showSection('js')"><i class="fa-brands fa-js"></i> جافاسكريبت</button>
+        </div>
+        <div id="sectionContent" style="display:none;">
+            <div class="section-tabs" id="sectionTabs"></div>
+            <div class="resources-list" id="resourcesList"></div>
+            <button class="back-btn" onclick="showOptions()">رجوع لاختيار لغة</button>
+        </div>
+        <button class="back-btn" style="margin-top:30px;" onclick="window.location.href='/home'">رجوع للرئيسية</button>
+    </div>
+    <script>
+        // مصادر لكل لغة ولكل نوع (فيديو، كتاب، موقع، اختبار)
+        const resources = {
+            cpp: {
+                فيديو: [
+                    { title: "دورة C++ من الصفر حتى الاحتراف", url: "https://www.youtube.com/embed/8jLOx1hD3_o", type: "video" },
+                    { title: "شرح أساسيات C++ بالعربي", url: "https://www.youtube.com/embed/6kQp6lM0l6g", type: "video" }
+                ],
+                كتاب: [
+                    { title: "كتاب C++ بالعربي PDF", url: "https://drive.google.com/file/d/1n5nQw8kQw8kQw8kQw8kQw8kQw8kQw8k/view", type: "pdf" }
+                ],
+                موقع: [
+                    { title: "تعلم C++ تفاعلي", url: "https://www.learncpp.com/", type: "site" }
+                ],
+                اختبار: [
+                    { title: "اختبر نفسك في C++", url: "https://www.proprofs.com/quiz-school/topic/c-plus-plus", type: "quiz" }
+                ]
+            },
+            python: {
+                فيديو: [
+                    { title: "دورة بايثون بالعربي", url: "https://www.youtube.com/embed/rfscVS0vtbw", type: "video" }
+                ],
+                كتاب: [
+                    { title: "كتاب تعلم بايثون PDF", url: "https://drive.google.com/file/d/1n5nQw8kQw8kQw8kQw8kQw8kQw8kQw8k/view", type: "pdf" }
+                ],
+                موقع: [
+                    { title: "موقع Python الرسمي", url: "https://www.python.org/", type: "site" }
+                ],
+                اختبار: [
+                    { title: "اختبار بايثون تفاعلي", url: "https://www.w3schools.com/python/python_quiz.asp", type: "quiz" }
+                ]
+            },
+            web: {
+                فيديو: [
+                    { title: "تعلم HTML و CSS من الصفر", url: "https://www.youtube.com/embed/3tB0uDqRkQA", type: "video" },
+                    { title: "دورة جافاسكريبت كاملة", url: "https://www.youtube.com/embed/PlbupGCBV6w", type: "video" }
+                ],
+                كتاب: [
+                    { title: "كتاب HTML و CSS PDF", url: "https://drive.google.com/file/d/1n5nQw8kQw8kQw8kQw8kQw8kQw8kQw8k/view", type: "pdf" }
+                ],
+                موقع: [
+                    { title: "موقع w3schools", url: "https://www.w3schools.com/", type: "site" }
+                ],
+                اختبار: [
+                    { title: "اختبار HTML و CSS", url: "https://www.w3schools.com/html/html_quiz.asp", type: "quiz" }
+                ]
+            },
+            java: {
+                فيديو: [
+                    { title: "دورة جافا بالعربي", url: "https://www.youtube.com/embed/grEKMHGYyns", type: "video" }
+                ],
+                كتاب: [
+                    { title: "كتاب جافا PDF", url: "https://drive.google.com/file/d/1n5nQw8kQw8kQw8kQw8kQw8kQw8kQw8k/view", type: "pdf" }
+                ],
+                موقع: [
+                    { title: "موقع Java الرسمي", url: "https://www.java.com/", type: "site" }
+                ],
+                اختبار: [
+                    { title: "اختبار جافا", url: "https://www.w3schools.com/java/java_quiz.asp", type: "quiz" }
+                ]
+            },
+            js: {
+                فيديو: [
+                    { title: "دورة جافاسكريبت كاملة", url: "https://www.youtube.com/embed/PlbupGCBV6w", type: "video" }
+                ],
+                كتاب: [
+                    { title: "كتاب جافاسكريبت PDF", url: "https://drive.google.com/file/d/1n5nQw8kQw8kQw8kQw8kQw8kQw8kQw8k/view", type: "pdf" }
+                ],
+                موقع: [
+                    { title: "موقع JavaScript.info", url: "https://javascript.info/", type: "site" }
+                ],
+                اختبار: [
+                    { title: "اختبار جافاسكريبت", url: "https://www.w3schools.com/js/js_quiz.asp", type: "quiz" }
+                ]
+            }
+        };
+
+        function showSection(lang) {
+            document.getElementById('studyOptions').style.display = 'none';
+            document.getElementById('sectionContent').style.display = 'block';
+            renderTabs(lang, 'فيديو');
+        }
+
+        function renderTabs(lang, activeTab) {
+            const tabs = ['فيديو', 'كتاب', 'موقع', 'اختبار'];
+            const sectionTabs = document.getElementById('sectionTabs');
+            sectionTabs.innerHTML = "";
+            tabs.forEach(tab => {
+                const btn = document.createElement('button');
+                btn.className = "tab-btn" + (tab === activeTab ? " active" : "");
+                btn.textContent = tab;
+                btn.onclick = () => renderTabs(lang, tab);
+                sectionTabs.appendChild(btn);
+            });
+            renderResources(lang, activeTab);
+        }
+
+        function renderResources(lang, type) {
+            const list = document.getElementById('resourcesList');
+            list.innerHTML = "";
+            (resources[lang][type] || []).forEach(res => {
+                const card = document.createElement('div');
+                card.className = "resource-card";
+                const title = document.createElement('div');
+                title.className = "resource-title";
+                title.textContent = res.title;
+                card.appendChild(title);
+                if (res.type === "video") {
+                    const iframe = document.createElement('iframe');
+                    iframe.className = "video-iframe";
+                    iframe.src = res.url;
+                    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                    iframe.allowFullscreen = true;
+                    card.appendChild(iframe);
+                } else if (res.type === "pdf" || res.type === "site" || res.type === "quiz") {
+                    const link = document.createElement('a');
+                    link.className = "resource-link";
+                    link.href = res.url;
+                    link.target = "_blank";
+                    link.textContent = res.type === "pdf" ? "تحميل الكتاب" : (res.type === "site" ? "زيارة الموقع" : "ابدأ الاختبار");
+                    card.appendChild(link);
+                }
+                list.appendChild(card);
+            });
+        }
+
+        function showOptions() {
+            document.getElementById('studyOptions').style.display = 'flex';
+            document.getElementById('sectionContent').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

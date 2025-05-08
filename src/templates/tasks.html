@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>مهامي</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <style>
+        body {
+            background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+            min-height: 100vh;
+            font-family: 'Cairo', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .tasks-container {
+            background: #fff;
+            padding: 2.5rem 2rem;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18);
+            width: 370px;
+            max-width: 98vw;
+            text-align: center;
+        }
+        .tasks-title {
+            color: #185a9d;
+            margin-bottom: 1.2rem;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .tasks-form {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .tasks-input {
+            flex: 1 1 100px;
+            padding: 0.7rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            min-width: 80px;
+        }
+        .tasks-add-btn {
+            background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.7rem 1.2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .tasks-add-btn:hover {
+            background: linear-gradient(90deg, #185a9d 0%, #43cea2 100%);
+        }
+        .tasks-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: right;
+        }
+        .task-item {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 0.7rem 1rem;
+            margin-bottom: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1.05rem;
+            transition: background 0.2s;
+        }
+        .task-item.done {
+            text-decoration: line-through;
+            background: #d4edda;
+            color: #888;
+        }
+        .task-meta {
+            color: #2575fc;
+            font-size: 0.97em;
+            margin-right: 0.5em;
+        }
+        .task-actions i {
+            cursor: pointer;
+            margin-left: 10px;
+            color: #2575fc;
+            transition: color 0.2s;
+        }
+        .task-actions i:hover {
+            color: #185a9d;
+        }
+    </style>
+</head>
+<body>
+    <div class="tasks-container">
+        <div class="tasks-title"><i class="fa-solid fa-list-check"></i> مهامي</div>
+        <form class="tasks-form" id="tasksForm">
+            <input type="text" class="tasks-input" id="taskInput" placeholder="أضف مهمة جديدة..." autocomplete="off"/>
+            <input type="date" class="tasks-input" id="taskDate" required/>
+            <input type="time" class="tasks-input" id="taskTime" required/>
+            <button class="tasks-add-btn" type="submit"><i class="fa-solid fa-plus"></i></button>
+        </form>
+        <ul class="tasks-list" id="tasksList"></ul>
+    </div>
+    <script>
+        async function fetchTasks() {
+            const res = await fetch("/api/tasks", {
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("access_token")
+                }
+            });
+            const tasks = await res.json();
+            renderTasks(tasks);
+            // حفظ المهام في localStorage لصفحة home
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
+        async function addTask(title, date, time) {
+            await fetch("/api/tasks", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("access_token")
+                },
+                body: JSON.stringify({title, date, time})
+            });
+            fetchTasks();
+        }
+        async function deleteTask(id) {
+            await fetch(`/api/tasks/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("access_token")
+                }
+            });
+            fetchTasks();
+        }
+        function renderTasks(tasks) {
+            const tasksList = document.getElementById("tasksList");
+            tasksList.innerHTML = "";
+            let doneCount = 0;
+            tasks.forEach(task => {
+                if (task.is_done) doneCount++;
+                const li = document.createElement("li");
+                li.className = "task-item" + (task.is_done ? " done" : "");
+                li.innerHTML = `
+                    <span>
+                        ${task.title}
+                        <span class="task-meta">
+                            <i class="fa-regular fa-calendar"></i> ${task.date || ""}
+                            <i class="fa-regular fa-clock"></i> ${task.time || ""}
+                        </span>
+                    </span>
+                    <span class="task-actions">
+                        <i class="fa-solid fa-trash" title="حذف" onclick="deleteTask('${task.id}')"></i>
+                    </span>
+                `;
+                tasksList.appendChild(li);
+            });
+            // تحديث التقدم في localStorage
+            let progress = tasks.length > 0 ? Math.round((doneCount / tasks.length) * 100) : 0;
+            localStorage.setItem("progress", progress);
+            // حفظ المهام في localStorage (لصفحة home)
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
+        document.getElementById("tasksForm").onsubmit = e => {
+            e.preventDefault();
+            const val = document.getElementById("taskInput").value.trim();
+            const date = document.getElementById("taskDate").value;
+            const time = document.getElementById("taskTime").value;
+            if (val && date && time) addTask(val, date, time);
+            document.getElementById("taskInput").value = "";
+            document.getElementById("taskDate").value = "";
+            document.getElementById("taskTime").value = "";
+        };
+        fetchTasks();
+        window.deleteTask = deleteTask;
+    </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>إنشاء حساب جديد</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cairo', sans-serif;
+        }
+        .login-container {
+            background: #fff;
+            padding: 2.5rem 2rem;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.2);
+            width: 350px;
+            text-align: center;
+        }
+        .login-container h2 {
+            margin-bottom: 1.5rem;
+            color: #2575fc;
+        }
+        .login-container input {
+            width: 90%;
+            padding: 0.7rem;
+            margin: 0.7rem 0;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.2s;
+        }
+        .login-container input:focus {
+            border: 1.5px solid #2575fc;
+            outline: none;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background 0.2s;
+        }
+        .login-container button:hover {
+            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+        }
+        .error-message {
+            color: #e74c3c;
+            margin-top: 1rem;
+        }
+        .success-message {
+            color: #27ae60;
+            margin-top: 1rem;
+        }
+        .login-container .link {
+            margin-top: 1rem;
+            display: block;
+            color: #2575fc;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <form class="login-container" id="registerForm">
+        <h2>إنشاء حساب جديد</h2>
+        <input type="text" name="username" placeholder="اسم المستخدم" required>
+        <input type="email" name="email" placeholder="البريد الإلكتروني" required>
+        <input type="text" name="phone_number" placeholder="رقم الهاتف" required>
+        <input type="password" name="password_hash" placeholder="كلمة المرور" required>
+        <button type="submit">إنشاء حساب</button>
+        <a class="link" href="/login-page">لديك حساب؟ تسجيل الدخول</a>
+        <div class="error-message" id="errorMsg"></div>
+        <div class="success-message" id="successMsg"></div>
+    </form>
+    <script>
+        document.getElementById('registerForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const username = this.username.value;
+            const email = this.email.value;
+            const phone_number = this.phone_number.value;
+            const password_hash = this.password_hash.value;
+            const errorMsg = document.getElementById('errorMsg');
+            const successMsg = document.getElementById('successMsg');
+            errorMsg.textContent = "";
+            successMsg.textContent = "";
+            try {
+                const res = await fetch('/signup', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ username, email, phone_number, password_hash })
+                });
+                if (res.ok) {
+                    successMsg.textContent = 'تم إنشاء الحساب بنجاح!';
+                    setTimeout(() => { window.location.href = '/login-page'; }, 1500);
+                } else {
+                    const err = await res.json();
+                    errorMsg.textContent = err.detail || 'حدث خطأ أثناء إنشاء الحساب';
+                }
+            } catch (err) {
+                errorMsg.textContent = 'حدث خطأ أثناء الاتصال بالخادم';
+            }
+        }
+    </script>
+</body>
+</html>

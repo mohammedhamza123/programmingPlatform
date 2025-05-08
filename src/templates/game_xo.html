@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>لعبة XO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            font-family: 'Cairo', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .xo-container {
+            background: #fff;
+            padding: 2rem 2.5rem;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.15);
+            text-align: center;
+        }
+        .xo-title {
+            color: #2575fc;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 70px);
+            grid-template-rows: repeat(3, 70px);
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .cell {
+            width: 70px;
+            height: 70px;
+            background: #f0f4fa;
+            border-radius: 10px;
+            font-size: 2.2rem;
+            color: #2575fc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .cell:hover {
+            background: #e3eaff;
+        }
+        .status {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            color: #444;
+        }
+        .reset-btn {
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .reset-btn:hover {
+            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="xo-container">
+        <div class="xo-title">لعبة XO (إكس أو)</div>
+        <div class="status" id="status"></div>
+        <div class="board" id="board"></div>
+        <button class="reset-btn" onclick="resetGame()">إعادة اللعب</button>
+    </div>
+    <script>
+        let board = ["", "", "", "", "", "", "", "", ""];
+        let currentPlayer = "X";
+        let gameActive = true;
+
+        const statusDisplay = document.getElementById('status');
+        const boardElement = document.getElementById('board');
+
+        function renderBoard() {
+            boardElement.innerHTML = "";
+            board.forEach((cell, idx) => {
+                const cellDiv = document.createElement('div');
+                cellDiv.className = "cell";
+                cellDiv.textContent = cell;
+                cellDiv.onclick = () => handleCellClick(idx);
+                boardElement.appendChild(cellDiv);
+            });
+        }
+
+        function handleCellClick(idx) {
+            if (!gameActive || board[idx] !== "") return;
+            board[idx] = currentPlayer;
+            renderBoard();
+            if (checkWinner()) {
+                statusDisplay.textContent = `اللاعب ${currentPlayer} فاز!`;
+                gameActive = false;
+            } else if (board.every(cell => cell !== "")) {
+                statusDisplay.textContent = "تعادل!";
+                gameActive = false;
+            } else {
+                currentPlayer = currentPlayer === "X" ? "O" : "X";
+                statusDisplay.textContent = `دور اللاعب ${currentPlayer}`;
+            }
+        }
+
+        function checkWinner() {
+            const winPatterns = [
+                [0,1,2],[3,4,5],[6,7,8],
+                [0,3,6],[1,4,7],[2,5,8],
+                [0,4,8],[2,4,6]
+            ];
+            return winPatterns.some(pattern =>
+                pattern.every(idx => board[idx] === currentPlayer)
+            );
+        }
+
+        function resetGame() {
+            board = ["", "", "", "", "", "", "", "", ""];
+            currentPlayer = "X";
+            gameActive = true;
+            statusDisplay.textContent = `دور اللاعب ${currentPlayer}`;
+            renderBoard();
+        }
+
+        // بدء اللعبة
+        resetGame();
+    </script>
+</body>
+</html>

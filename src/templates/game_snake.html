@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>لعبة الدودة (Snake)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            font-family: 'Cairo', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .snake-container {
+            background: #fff;
+            padding: 2rem 2.5rem;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.15);
+            text-align: center;
+        }
+        .snake-title {
+            color: #2575fc;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+        canvas {
+            background: #e3eaff;
+            border-radius: 10px;
+            display: block;
+            margin: 0 auto 1rem auto;
+        }
+        .score {
+            font-size: 1.1rem;
+            color: #444;
+            margin-bottom: 1rem;
+        }
+        .reset-btn {
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .reset-btn:hover {
+            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="snake-container">
+        <div class="snake-title">لعبة الدودة (Snake)</div>
+        <div class="score" id="score">النقاط: 0</div>
+        <canvas id="game" width="320" height="320"></canvas>
+        <button class="reset-btn" onclick="resetGame()">إعادة اللعب</button>
+        <div style="margin-top:1rem;color:#888;font-size:0.95rem;">استخدم الأسهم أو اللمس للتحكم بالدودة</div>
+    </div>
+    <script>
+        const canvas = document.getElementById('game');
+        const ctx = canvas.getContext('2d');
+        const box = 20;
+        const rows = 16, cols = 16;
+        let snake, food, score, direction, nextDirection, gameInterval, gameActive;
+
+        function resetGame() {
+            snake = [{x: 8*box, y: 8*box}];
+            direction = "RIGHT";
+            nextDirection = "RIGHT";
+            score = 0;
+            food = randomFood();
+            gameActive = true;
+            document.getElementById('score').textContent = "النقاط: 0";
+            clearInterval(gameInterval);
+            gameInterval = setInterval(draw, 100);
+        }
+
+        function randomFood() {
+            let newFood;
+            while (true) {
+                newFood = {
+                    x: Math.floor(Math.random()*cols)*box,
+                    y: Math.floor(Math.random()*rows)*box
+                };
+                // لا تضع الطعام فوق جسم الدودة
+                if (!snake.some(seg => seg.x === newFood.x && seg.y === newFood.y)) break;
+            }
+            return newFood;
+        }
+
+        document.addEventListener("keydown", function(e) {
+            if (!gameActive) return;
+            if (e.key === "ArrowLeft" && direction !== "RIGHT") nextDirection = "LEFT";
+            else if (e.key === "ArrowUp" && direction !== "DOWN") nextDirection = "UP";
+            else if (e.key === "ArrowRight" && direction !== "LEFT") nextDirection = "RIGHT";
+            else if (e.key === "ArrowDown" && direction !== "UP") nextDirection = "DOWN";
+        });
+
+        // دعم التحكم باللمس للجوال
+        let touchStartX = null, touchStartY = null;
+        canvas.addEventListener("touchstart", function(e) {
+            const t = e.touches[0];
+            touchStartX = t.clientX;
+            touchStartY = t.clientY;
+        });
+        canvas.addEventListener("touchmove", function(e) {
+            if (!gameActive || touchStartX === null || touchStartY === null) return;
+            const t = e.touches[0];
+            const dx = t.clientX - touchStartX;
+            const dy = t.clientY - touchStartY;
+            if (Math.abs(dx) > Math.abs(dy)) {
+                if (dx > 20 && direction !== "LEFT") nextDirection = "RIGHT";
+                else if (dx < -20 && direction !== "RIGHT") nextDirection = "LEFT";
+            } else {
+                if (dy > 20 && direction !== "UP") nextDirection = "DOWN";
+                else if (dy < -20 && direction !== "DOWN") nextDirection = "UP";
+            }
+            touchStartX = null; touchStartY = null;
+        });
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // رسم الدودة
+            for (let i = 0; i < snake.length; i++) {
+                ctx.fillStyle = i === 0 ? "#2575fc" : "#6a11cb";
+                ctx.fillRect(snake[i].x, snake[i].y, box, box);
+                ctx.strokeStyle = "#fff";
+                ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+            }
+
+            // رسم الطعام
+            ctx.fillStyle = "#e74c3c";
+            ctx.fillRect(food.x, food.y, box, box);
+
+            // حركة الدودة
+            let headX = snake[0].x;
+            let headY = snake[0].y;
+            direction = nextDirection;
+
+            if (direction === "LEFT") headX -= box;
+            if (direction === "UP") headY -= box;
+            if (direction === "RIGHT") headX += box;
+            if (direction === "DOWN") headY += box;
+
+            // التحقق من الاصطدام بالجدار أو بالجسم
+            if (headX < 0 || headY < 0 || headX >= cols*box || headY >= rows*box || collision(headX, headY, snake)) {
+                gameActive = false;
+                clearInterval(gameInterval);
+                ctx.font = "bold 22px Cairo";
+                ctx.fillStyle = "#e74c3c";
+                ctx.fillText("انتهت اللعبة!", 90, 170);
+                return;
+            }
+
+            // أكل الطعام
+            if (headX === food.x && headY === food.y) {
+                score++;
+                document.getElementById('score').textContent = "النقاط: " + score;
+                food = randomFood();
+            } else {
+                snake.pop();
+            }
+
+            snake.unshift({x: headX, y: headY});
+        }
+
+        function collision(x, y, array) {
+            for (let i = 0; i < array.length; i++) {
+                if (x === array[i].x && y === array[i].y) return true;
+            }
+            return false;
+        }
+
+        // بدء اللعبة
+        resetGame();
+    </script>
+</body>
+</html>

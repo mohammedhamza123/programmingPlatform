@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>لعبة الذاكرة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            font-family: 'Cairo', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .memory-container {
+            background: #fff;
+            padding: 2rem 2.5rem;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.15);
+            text-align: center;
+        }
+        .memory-title {
+            color: #2575fc;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+        .memory-board {
+            display: grid;
+            grid-template-columns: repeat(4, 60px);
+            grid-gap: 15px;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .memory-card {
+            width: 60px;
+            height: 60px;
+            background: #e3eaff;
+            border-radius: 10px;
+            font-size: 2rem;
+            color: #2575fc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s, color 0.2s;
+        }
+        .memory-card.flipped, .memory-card.matched {
+            background: #6a11cb;
+            color: #fff;
+            cursor: default;
+        }
+        .reset-btn {
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .reset-btn:hover {
+            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+        }
+        .score {
+            font-size: 1.1rem;
+            color: #444;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="memory-container">
+        <div class="memory-title">لعبة الذاكرة</div>
+        <div class="score" id="score">المحاولات: 0</div>
+        <div class="memory-board" id="memory-board"></div>
+        <button class="reset-btn" onclick="resetGame()">إعادة اللعب</button>
+    </div>
+    <script>
+        const icons = ["🍎","🍌","🍇","🍓","🍒","🍉","🍋","🍑"];
+        let cards, flipped, matched, tries;
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function resetGame() {
+            const board = document.getElementById('memory-board');
+            let deck = icons.concat(icons);
+            shuffle(deck);
+            board.innerHTML = "";
+            cards = [];
+            flipped = [];
+            matched = [];
+            tries = 0;
+            document.getElementById('score').textContent = "المحاولات: 0";
+            deck.forEach((icon, idx) => {
+                const card = document.createElement('div');
+                card.className = "memory-card";
+                card.dataset.icon = icon;
+                card.dataset.idx = idx;
+                card.onclick = () => flipCard(card);
+                card.textContent = "";
+                board.appendChild(card);
+                cards.push(card);
+            });
+        }
+
+        function flipCard(card) {
+            if (flipped.length === 2 || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+            card.classList.add('flipped');
+            card.textContent = card.dataset.icon;
+            flipped.push(card);
+
+            if (flipped.length === 2) {
+                tries++;
+                document.getElementById('score').textContent = "المحاولات: " + tries;
+                if (flipped[0].dataset.icon === flipped[1].dataset.icon) {
+                    flipped[0].classList.add('matched');
+                    flipped[1].classList.add('matched');
+                    matched.push(flipped[0], flipped[1]);
+                    flipped = [];
+                    if (matched.length === cards.length) {
+                        setTimeout(() => {
+                            alert("مبروك! أنهيت اللعبة بعد " + tries + " محاولة 🎉");
+                        }, 300);
+                    }
+                } else {
+                    setTimeout(() => {
+                        flipped[0].classList.remove('flipped');
+                        flipped[1].classList.remove('flipped');
+                        flipped[0].textContent = "";
+                        flipped[1].textContent = "";
+                        flipped = [];
+                    }, 800);
+                }
+            }
+        }
+
+        // بدء اللعبة
+        resetGame();
+    </script>
+</body>
+</html>
