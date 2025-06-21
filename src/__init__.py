@@ -5,6 +5,7 @@ from fastapi.templating import Jinja2Templates
 from src.db import initdb
 from src.user.routes import user_router
 from src.Task.routes import router as task_router
+from src.api import router as weather_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -14,7 +15,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.include_router(user_router)
 app.include_router(task_router)
-
+app.include_router(weather_router)
 templates = Jinja2Templates(directory="src/templates")
 
 def render_template(template_name: str):
@@ -37,6 +38,7 @@ pages = [
     ("/articles", "articles.html"),
     ("/tasks", "tasks.html"),
     ("/community", "community.html"),
+    ("/weather", "weather.html"),
 ]
 
 for path, template in pages:

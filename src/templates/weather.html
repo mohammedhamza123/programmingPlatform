@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>الطقس في ليبيا</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Cairo', 'Tajawal', Arial, sans-serif;
+            background: linear-gradient(135deg, #1abc9c 0%, #185a9d 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            direction: rtl;
+        }
+        .weather-container {
+            background: #fff;
+            border-radius: 32px;
+            box-shadow: 0 8px 40px #185a9d33, 0 1.5px 8px #1abc9c22;
+            padding: 2.5rem 2.5rem 2rem 2.5rem;
+            max-width: 370px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .weather-container::before {
+            content: "";
+            position: absolute;
+            top: -60px;
+            left: -60px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, #1abc9c55 60%, transparent 100%);
+            z-index: 0;
+        }
+        .weather-container::after {
+            content: "";
+            position: absolute;
+            bottom: -60px;
+            right: -60px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, #185a9d33 60%, transparent 100%);
+            z-index: 0;
+        }
+        .weather-header {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 1.5rem;
+        }
+        .weather-header h1 {
+            font-size: 2.1rem;
+            color: #185a9d;
+            margin: 0 0 0.5rem 0;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .weather-header .fa-cloud-sun {
+            color: #1abc9c;
+            font-size: 2.5rem;
+            margin-bottom: 0.2rem;
+            animation: float 2s infinite alternate;
+        }
+        @keyframes float {
+            to { transform: translateY(-10px);}
+        }
+        .weather-form {
+            display: flex;
+            gap: 0.7rem;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.2rem;
+            z-index: 1;
+            position: relative;
+        }
+        .weather-form select {
+            padding: 0.7rem 1.2rem;
+            border-radius: 12px;
+            border: 1.5px solid #1abc9c;
+            font-size: 1.1rem;
+            background: #f8fafc;
+            color: #185a9d;
+            font-weight: 600;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .weather-form select:focus {
+            border: 1.5px solid #185a9d;
+        }
+        .weather-form button {
+            background: linear-gradient(90deg, #1abc9c 0%, #185a9d 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 0.7rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #185a9d22;
+            transition: background 0.18s, transform 0.18s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .weather-form button:hover {
+            background: linear-gradient(90deg, #185a9d 0%, #1abc9c 100%);
+            transform: scale(1.05);
+        }
+        .weather-result {
+            margin-top: 1.5rem;
+            font-size: 1.15rem;
+            color: #185a9d;
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 1.2rem 0.7rem;
+            min-height: 70px;
+            box-shadow: 0 1px 6px #1abc9c11;
+            position: relative;
+            z-index: 1;
+            font-weight: 600;
+            line-height: 2;
+        }
+        .weather-error {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .weather-icon {
+            width: 60px;
+            height: 60px;
+            vertical-align: middle;
+            margin-bottom: 0.5rem;
+            filter: drop-shadow(0 2px 8px #1abc9c33);
+        }
+        .city-label {
+            color: #1abc9c;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.7rem;
+            display: block;
+        }
+        @media (max-width: 500px) {
+            .weather-container {
+                padding: 1.2rem 0.5rem 1rem 0.5rem;
+                max-width: 98vw;
+            }
+            .weather-header h1 { font-size: 1.3rem; }
+            .weather-form select, .weather-form button { font-size: 1rem; padding: 0.5rem 0.7rem; }
+            .weather-result { font-size: 1rem; padding: 0.7rem 0.2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="weather-container">
+        <div class="weather-header">
+            <i class="fa-solid fa-cloud-sun"></i>
+            <h1>الطقس في ليبيا</h1>
+        </div>
+        <form class="weather-form" onsubmit="getWeather(event)">
+            <select id="city" required>
+                <option value="">اختر المدينة</option>
+                <option value="Tripoli">طرابلس</option>
+                <option value="Benghazi">بنغازي</option>
+                <option value="Misrata">مصراتة</option>
+                <option value="Sabha">سبها</option>
+                <option value="Zawiya">الزاوية</option>
+                <option value="Zliten">زليتن</option>
+                <option value="Al Bayda">البيضاء</option>
+                <option value="Tobruk">طبرق</option>
+                <option value="Derna">درنة</option>
+                <option value="Gharyan">غريان</option>
+                <!-- أضف مدن أخرى حسب الحاجة -->
+            </select>
+            <button type="submit"><i class="fa-solid fa-search-location"></i>عرض الطقس</button>
+        </form>
+        <div id="result" class="weather-result"></div>
+    </div>
+    <script>
+        async function getWeather(e) {
+            if (e) e.preventDefault();
+            const city = document.getElementById('city').value;
+            const resultDiv = document.getElementById('result');
+            if (!city) {
+                resultDiv.innerHTML = '';
+                return;
+            }
+            resultDiv.innerHTML = 'جاري جلب الطقس...';
+            try {
+                const res = await fetch(`/weather/?city=${encodeURIComponent(city)}`);
+                if (!res.ok) {
+                    resultDiv.innerHTML = `<span class="weather-error">تعذر العثور على المدينة أو حدث خطأ.</span>`;
+                    return;
+                }
+                const data = await res.json();
+                if (data.sys && data.sys.country !== "LY") {
+                    resultDiv.innerHTML = `<span class="weather-error">هذه المدينة ليست في ليبيا.</span>`;
+                    return;
+                }
+                resultDiv.innerHTML = `
+                    <div>
+                        <img class="weather-icon" src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" alt="icon">
+                    </div>
+                    <span class="city-label">${data.name} - ليبيا</span>
+                    <div>درجة الحرارة: <b>${data.main.temp}°C</b></div>
+                    <div>الرطوبة: <b>${data.main.humidity}%</b></div>
+                    <div>الوصف: <b>${data.weather[0].description}</b></div>
+                    <div>الرياح: <b>${data.wind.speed} م/ث</b></div>
+                `;
+            } catch {
+                resultDiv.innerHTML = `<span class="weather-error">حدث خطأ أثناء جلب بيانات الطقس.</span>`;
+            }
+        }
+    </script>
+</body>
+</html>
