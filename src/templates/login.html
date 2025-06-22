@@ -3,72 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <title>تسجيل الدخول</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- خطوط وأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
         body {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            background: linear-gradient(135deg, #1abc9c 0%, #185a9d 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Cairo', sans-serif;
-            padding: 15px;
+            font-family: 'Cairo', 'Montserrat', Arial, sans-serif;
+            direction: rtl;
         }
-        .login-container {
+        .container {
+            background-color: #fff;
+            border-radius: 30px;
+            box-shadow: 0 8px 40px #185a9d33, 0 1.5px 8px #1abc9c22;
+            position: relative;
+            overflow: hidden;
+            width: 800px;
+            max-width: 98vw;
+            min-height: 480px;
+            display: flex;
+        }
+        .form-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 40px;
+            transition: all 0.6s ease-in-out;
             background: #fff;
-            padding: 2.5rem 2rem;
-            border-radius: 18px;
-            box-shadow: 0 8px 32px rgba(44, 62, 80, 0.2);
-            width: 350px;
-            text-align: center;
         }
-        .login-container h2 {
-            margin-bottom: 1.5rem;
-            color: #2575fc;
+        .sign-in {
+            z-index: 2;
         }
-        .login-container input {
-            width: 90%;
-            padding: 0.7rem;
-            margin: 0.7rem 0;
-            border: 1px solid #eee;
+        .sign-up {
+            display: none; /* يمكنك تفعيلها لاحقاً */
+        }
+        .form-container h1 {
+            font-size: 2rem;
+            color: #185a9d;
+            margin-bottom: 1.2rem;
+            font-weight: bold;
+        }
+        .form-container input {
+            background-color: #f0f4fa;
+            border: none;
+            margin: 10px 0;
+            padding: 12px 16px;
+            font-size: 1.1rem;
             border-radius: 8px;
-            font-size: 1rem;
-            transition: border 0.2s;
-        }
-        .login-container input:focus {
-            border: 1.5px solid #2575fc;
-            outline: none;
-        }
-        .login-container button {
             width: 100%;
-            padding: 0.8rem;
-            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            outline: none;
+            transition: border 0.2s;
+            border: 1.5px solid #e2e2e2;
+        }
+        .form-container input:focus {
+            border: 1.5px solid #1abc9c;
+        }
+        .form-container button {
+            background: linear-gradient(90deg, #1abc9c 0%, #185a9d 100%);
             color: #fff;
+            font-size: 1.1rem;
+            padding: 12px 0;
             border: none;
             border-radius: 8px;
-            font-size: 1.1rem;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-top: 15px;
             cursor: pointer;
-            margin-top: 1rem;
-            transition: background 0.2s;
+            width: 100%;
+            transition: background 0.2s, transform 0.18s;
         }
-        .login-container button:hover {
-            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+        .form-container button:hover {
+            background: linear-gradient(90deg, #185a9d 0%, #1abc9c 100%);
+            transform: scale(1.03);
         }
         .error-message {
             color: #e74c3c;
             margin-top: 1rem;
+            font-weight: bold;
+            min-height: 24px;
+        }
+        .social-icons {
+            margin: 18px 0 10px 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .social-icons a {
+            border: 1.5px solid #1abc9c;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            color: #185a9d;
+            font-size: 1.3rem;
+            background: #f8fafc;
+            transition: background 0.18s, color 0.18s;
+        }
+        .social-icons a:hover {
+            background: #1abc9c;
+            color: #fff;
+        }
+        .toggle-container {
+            background: linear-gradient(135deg, #1abc9c 0%, #185a9d 100%);
+            color: #fff;
+            width: 340px;
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 30px;
+            border-radius: 0 30px 30px 0;
+            box-shadow: -2px 0 12px #185a9d22;
+        }
+        .toggle-container h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+        .toggle-container p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        .register-link {
+            margin-top: 1.2rem;
+            display: block;
+            color: #1abc9c;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: color 0.18s;
+        }
+        .register-link:hover {
+            color: #185a9d;
+            text-decoration: underline;
+        }
+        @media (max-width: 900px) {
+            .container { flex-direction: column; width: 98vw; min-height: 0; }
+            .toggle-container { width: 100%; border-radius: 0 0 30px 30px; min-height: 180px; box-shadow: none; }
+        }
+        @media (max-width: 600px) {
+            .form-container { padding: 0 10px; }
+            .toggle-container { padding: 0 10px; }
         }
     </style>
 </head>
 <body>
-    <form class="login-container" id="loginForm">
-        <h2>تسجيل الدخول</h2>
-        <input type="text" name="phone_number" placeholder="رقم الهاتف" required>
-        <input type="password" name="password_hash" placeholder="كلمة المرور" required>
-        <button type="submit">دخول</button>
-        <div class="error-message" id="errorMsg"></div>
-    </form>
+    <div class="container" id="container">
+        <div class="form-container sign-in">
+            <form id="loginForm" autocomplete="on">
+                <h1>تسجيل الدخول</h1>
+                <div class="social-icons">
+                    <a href="#" title="Google"><i class="fa-brands fa-google"></i></a>
+                    <a href="#" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                </div>
+                <input type="text" name="phone_number" placeholder="رقم الهاتف" required autocomplete="username">
+                <input type="password" name="password_hash" placeholder="كلمة المرور" required autocomplete="current-password">
+                <button type="submit">دخول</button>
+                <a class="register-link" href="/register-page">ليس لديك حساب؟ إنشاء حساب جديد</a>
+                <div class="error-message" id="errorMsg"></div>
+            </form>
+        </div>
+        <div class="toggle-container">
+            <h2>مرحباً بك من جديد!</h2>
+            <p>سجّل دخولك للوصول إلى جميع مزايا منصتك البرمجية.</p>
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="login" style="width:90px; margin-bottom:1rem; border-radius:50%; box-shadow:0 2px 12px #1abc9c33;">
+        </div>
+    </div>
     <script>
         document.getElementById('loginForm').onsubmit = async function(e) {
             e.preventDefault();
@@ -84,27 +197,17 @@
                     body: JSON.stringify({ phone_number, password_hash })
                 });
 
-                console.log("Response status:", res.status); // تسجيل حالة الاستجابة
-                const responseText = await res.text(); // قراءة النص الخام للاستجابة
-                console.log("Raw response:", responseText);
+                const responseText = await res.text();
 
                 if (res.ok) {
-                    const data = JSON.parse(responseText); // تحويل النص إلى JSON
-                    console.log("Parsed response data:", data);
-
-                    // تخزين التوكنات في LocalStorage
+                    const data = JSON.parse(responseText);
                     localStorage.setItem("access_token", data.access_token);
-                    
-
-                    // إعادة التوجيه إلى الصفحة الرئيسية
                     window.location.href = '/home';
                 } else {
                     const err = JSON.parse(responseText);
-                    console.error("Error response:", err);
                     errorMsg.textContent = err.detail || 'بيانات غير صحيحة';
                 }
             } catch (err) {
-                console.error("Fetch error:", err);
                 errorMsg.textContent = 'حدث خطأ أثناء الاتصال بالخادم';
             }
         };

@@ -356,7 +356,7 @@
         .progress-bar-inner {
             background: linear-gradient(90deg, #1abc9c 0%, #185a9d 100%);
             height: 100%;
-            width: 60%; /* عدل النسبة حسب تقدم المستخدم */
+            width: 0%;/
         }
         .daily-tip {
             background: var(--card-bg);
@@ -539,7 +539,7 @@
         <div class="progress-widget">
             <span>تقدمك هذا الأسبوع</span>
             <div class="progress-bar"><div class="progress-bar-inner" id="progressBar"></div></div>
-            <span id="progressPercent">60%</span>
+            <span id="progressPercent">100%</span>
         </div>
         <div class="daily-tip">
             <i class="fa-solid fa-lightbulb"></i>
@@ -556,7 +556,8 @@
                 <li>إشعارات بالإنجازات والتقدم</li>
             </ul>
         </div>
-        <!-- قسم مطوري الموقع -->
+        <!-- قسم مطوري الموقع 
+         
         <div class="developers-section">
             <div class="developer-card">
                 <div class="developer-avatar">
@@ -581,12 +582,12 @@
                 </div>
             </div>
         </div>
-        <!-- نهاية قسم المطورين -->
+        نهاية قسم المطورين -->
     </div>
     <script>
         // تخصيص الترحيب حسب نوع المستخدم
         const userType = localStorage.getItem("user_type") || "مستخدم";
-        const username = localStorage.getItem("username") || "محمد حمزة";
+        const username = localStorage.getItem("username") || "بك";
         document.getElementById("username").textContent = `مرحباً ${username} 👋`;
         let welcomeMsg = "مرحباً بك في منصتك، استكشف وطور مهاراتك!";
         if (userType === "طالب") welcomeMsg = "أهلاً طالبنا المميز! استكشف الدروس وحقق أهدافك.";
